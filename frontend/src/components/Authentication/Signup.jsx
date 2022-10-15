@@ -6,11 +6,16 @@ import {
   InputGroup,
   InputRightElement,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
+  const navigate = useNavigate();
 
   const [credentials, setCredentials] = useState({
     name: "",
@@ -24,9 +29,142 @@ const Signup = () => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const handleUploadPicture = (e) => {};
+  const handleUploadPicture = async (e) => {
+    setLoading(true);
 
-  const submitHandler = (e) => {};
+    // If no image selected
+    if (e.target.files[0] === undefined) {
+      return toast({
+        title: "Please select an image",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+        variant: "left-accent",
+      });
+    }
+
+    // Check if the type of image is jpeg or png
+    if (
+      e.target.files[0].type === "image/jpeg" ||
+      e.target.files[0].type === "image/png"
+    ) {
+      try {
+        const data = new FormData();
+        data.append("file", e.target.files[0]); // Contains the file
+        data.append("upload_preset", "chat-app"); // Upload preset in Cloudinary
+        data.append("cloud_name", "devcvus7v"); // Cloud name in Cloudinary
+
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/devcvus7v/image/upload",
+          {
+            method: "POST",
+            body: data,
+          }
+        );
+        const json = await response.json();
+
+        setCredentials({
+          ...credentials,
+          [e.target.name]: json.url.toString(),
+        });
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+        setLoading(false);
+      }
+    } else {
+      console.log("Hello");
+      setLoading(false);
+      return toast({
+        title: "Please select an image",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+        variant: "left-accent",
+      });
+    }
+  };
+
+  const submitHandler = async () => {
+    setLoading(true);
+
+    // If anything is missing
+    if (
+      !credentials.name ||
+      !credentials.email ||
+      !credentials.password ||
+      !credentials.confirmPassword
+    ) {
+      setLoading(false);
+      return toast({
+        title: "Please Fill all the Feilds",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+        variant: "left-accent",
+      });
+    }
+
+    // If password and confirm password doesn't match
+    if (credentials.password !== credentials.confirmPassword) {
+      setLoading(false);
+      return toast({
+        title: "Passwords Do Not Match",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+        variant: "left-accent",
+      });
+    }
+
+    // Now submit the data
+    try {
+      const response = await fetch("/api/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: credentials.name,
+          email: credentials.email,
+          password: credentials.password,
+          pic: credentials.pic,
+        }),
+      });
+      const data = await response.json();
+
+      toast({
+        title: data.message,
+        status: !data.success ? "error" : "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+        variant: !data.success ? "left-accent" : "solid",
+      });
+
+      if (data.success) {
+        localStorage.setItem("userInfo", JSON.stringify(data));
+        setLoading(false);
+        navigate("/chats");
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      return toast({
+        title: "Internal server error",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+        variant: "solid",
+      });
+    }
+  };
 
   return (
     <Stack spacing="6">
@@ -34,7 +172,9 @@ const Signup = () => {
         <FormControl isRequired id="name">
           <FormLabel htmlFor="name">Name</FormLabel>
           <Input
-            type="name"
+            type="text"
+            name="name"
+            value={credentials.name}
             placeholder="Enter Your Name"
             onChange={(e) => handleCredentials(e)}
           />
@@ -46,6 +186,8 @@ const Signup = () => {
           <FormLabel htmlFor="email">Email</FormLabel>
           <Input
             type="email"
+            name="email"
+            value={credentials.email}
             placeholder="Enter Your Email"
             onChange={(e) => handleCredentials(e)}
           />
@@ -63,6 +205,8 @@ const Signup = () => {
             </InputRightElement>
             <Input
               type={show ? "text" : "password"}
+              name="password"
+              value={credentials.password}
               placeholder="Password"
               onChange={(e) => handleCredentials(e)}
             />
@@ -81,6 +225,8 @@ const Signup = () => {
             </InputRightElement>
             <Input
               type={show ? "text" : "password"}
+              name="confirmPassword"
+              value={credentials.confirmPassword}
               placeholder="Confirm Password"
               onChange={(e) => handleCredentials(e)}
             />
@@ -93,6 +239,7 @@ const Signup = () => {
           <FormLabel>Upload your Picture</FormLabel>
           <Input
             type="file"
+            name="pic"
             p={1.5}
             accept="image/*"
             onChange={(e) => handleUploadPicture(e)}
@@ -104,7 +251,8 @@ const Signup = () => {
         colorScheme="blue"
         width="100%"
         style={{ marginTop: 15 }}
-        onClick={() => submitHandler}
+        onClick={() => submitHandler()}
+        isLoading={loading}
       >
         Sign Up
       </Button>
