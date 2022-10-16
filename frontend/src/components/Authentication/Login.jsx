@@ -138,7 +138,10 @@ const Login = () => {
           setCredentials({ email: "guest@example.com", password: "123456" });
         }}
       >
-        Get Guest User Credentials
+        <i
+          className="fas fa-user-alt"
+          style={{ fontSize: "15px", marginRight: 8 }}
+        /> Get Guest User Credentials
       </Button>
     </Stack>
   );

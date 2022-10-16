@@ -4,6 +4,7 @@ import {
   FormLabel,
   Input,
   InputGroup,
+  InputLeftElement,
   InputRightElement,
   Stack,
   useToast,
@@ -196,7 +197,7 @@ const Signup = () => {
 
       <Stack spacing="5">
         <FormControl isRequired id="password">
-          <FormLabel htmlFor="password">password</FormLabel>
+          <FormLabel htmlFor="password">Password</FormLabel>
           <InputGroup>
             <InputRightElement w="4.5rem">
               <Button h="1.75rem" size="sm" onClick={() => setShow(!show)}>
@@ -216,7 +217,7 @@ const Signup = () => {
 
       <Stack spacing="5">
         <FormControl isRequired id="confirmPassword">
-          <FormLabel htmlFor="password">Confirm Password</FormLabel>
+          <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
           <InputGroup>
             <InputRightElement w="4.5rem">
               <Button h="1.75rem" size="sm" onClick={() => setShow(!show)}>
@@ -236,14 +237,32 @@ const Signup = () => {
 
       <Stack spacing="5">
         <FormControl id="pic">
-          <FormLabel>Upload your Picture</FormLabel>
-          <Input
-            type="file"
-            name="pic"
-            p={1.5}
-            accept="image/*"
-            onChange={(e) => handleUploadPicture(e)}
-          />
+          <FormLabel htmlFor="pic">Upload your Picture</FormLabel>
+
+          <InputGroup>
+            <InputLeftElement pointerEvents="none">
+              <i className="fas fa-folder-open" />
+            </InputLeftElement>
+
+            <Input
+              type="file"
+              name="pic"
+              accept="image/*"
+              isInvalid={true}
+              errorBorderColor="#eaafc8"
+              sx={{
+                "::file-selector-button": {
+                  height: 10,
+                  padding: 0,
+                  mr: 4,
+                  background: "none",
+                  border: "none",
+                  fontWeight: "bold",
+                },
+              }}
+              onChange={(e) => handleUploadPicture(e)}
+            />
+          </InputGroup>
         </FormControl>
       </Stack>
 
