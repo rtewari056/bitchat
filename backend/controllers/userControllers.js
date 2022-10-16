@@ -5,6 +5,9 @@ const {
   verifyPassword,
 } = require("../config");
 
+// @description     Register new user
+// @route           POST /api/user/
+// @access          Public
 const registerUser = async (req, res) => {
   const { name, email, password, pic } = req.body;
 
@@ -30,12 +33,21 @@ const registerUser = async (req, res) => {
   }
 
   // Register and store the new user
-  const userCreated = await User.create({
-    name,
-    email,
-    password: await generateHashedPassword(password),
-    pic,
-  });
+  const userCreated = await User.create(
+    // If there is no picture present, remove 'pic'
+    pic === undefined || pic.length === 0
+      ? {
+          name,
+          email,
+          password: await generateHashedPassword(password),
+        }
+      : {
+          name,
+          email,
+          password: await generateHashedPassword(password),
+          pic,
+        }
+  );
 
   if (userCreated) {
     return res.status(201).json({
@@ -57,6 +69,9 @@ const registerUser = async (req, res) => {
   }
 };
 
+// @description     Auth the user
+// @route           POST /api/users/login
+// @access          Public
 const authUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -73,7 +88,7 @@ const authUser = async (req, res) => {
   const userExists = await User.findOne({ email }).exec();
 
   // If user exists and password is verified
-  if (userExists && await verifyPassword(password, userExists.password)) {
+  if (userExists && (await verifyPassword(password, userExists.password))) {
     return res.status(200).json({
       success: true,
       statusCode: 200,
@@ -93,4 +108,26 @@ const authUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, authUser };
+// @description     Get or Search all users
+// @route           GET /api/user?search=
+// @access          Public
+const allUsers = async (req, res) => {
+  // Keyword contains search results
+  const keyword = req.query.search
+    ? {
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
+
+  // Find and return users except current user
+  const userExists = await User.find(keyword)
+    .find({ _id: { $ne: req.user._id } })
+    .exec();
+
+  return res.status(200).json(userExists);
+};
+
+module.exports = { registerUser, authUser, allUsers };
