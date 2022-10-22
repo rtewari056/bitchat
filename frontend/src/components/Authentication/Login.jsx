@@ -11,11 +11,15 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { ChatState } from "../../context/ChatProvider";
+
 const Login = () => {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const toast = useToast();
   const navigate = useNavigate();
+  const { setUser } = ChatState();
 
   const [credentials, setCredentials] = useState({
     email: "",
@@ -67,6 +71,7 @@ const Login = () => {
 
       if (data.success) {
         localStorage.setItem("userInfo", JSON.stringify(data));
+        setUser(data); // After login set user data
         setLoading(false);
         navigate("/chats");
       } else {
@@ -135,7 +140,7 @@ const Login = () => {
         colorScheme="red"
         width="100%"
         onClick={() => {
-          setCredentials({ email: "guest@example.com", password: "123456" });
+          setCredentials({ email: "guest@example.com", password: "12345678" });
         }}
       >
         <i

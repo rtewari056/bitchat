@@ -1,3 +1,13 @@
+# dependencies
 /node_modules
 /frontend/node_modules/
+
+# production
+/frontend/build
+
+# misc
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
