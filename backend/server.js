@@ -1,7 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const { connectToMongoDB } = require("./config");
-const { userRoutes, chatRoutes } = require("./routes");
+const { userRoutes, chatRoutes, messageRoutes } = require("./routes");
 const { notFound, errorHandler } = require("./middleware");
 
 const app = express(); // Use express js in our app
@@ -15,6 +15,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/message", messageRoutes);
 
 app.use(notFound); // Handle invalid routes
 app.use(errorHandler);

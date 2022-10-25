@@ -1,4 +1,5 @@
 const userRoutes = require("./userRoutes");
 const chatRoutes = require("./chatRoutes");
+const messageRoutes = require("./messageRoutes");
 
-module.exports = { userRoutes, chatRoutes };
+module.exports = { userRoutes, chatRoutes, messageRoutes };

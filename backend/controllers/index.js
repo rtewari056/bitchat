@@ -5,17 +5,22 @@ const {
   createGroupChat,
   renameGroup,
   addToGroup,
-  removeFromGroup
+  removeFromGroup,
 } = require("./chatControllers");
+const { sendMessage, allMessages } = require("./messageControllers");
 
 module.exports = {
   registerUser,
   authUser,
   allUsers,
+
   accessChat,
   fetchChats,
   createGroupChat,
   renameGroup,
   addToGroup,
-  removeFromGroup
+  removeFromGroup,
+
+  sendMessage,
+  allMessages,
 };

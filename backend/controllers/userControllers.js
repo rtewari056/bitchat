@@ -13,7 +13,6 @@ const registerUser = async (req, res) => {
 
   // Check if any of them is undefined
   if (!name || !email || !password) {
-    console.log(req.body);
     return res.status(400).json({
       success: false,
       statusCode: 400,
