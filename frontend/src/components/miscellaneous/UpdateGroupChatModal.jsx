@@ -22,7 +22,7 @@ import { ChatState } from "../../context/ChatProvider";
 import UserBadgeItem from "../UserAvatar/UserBadgeItem";
 import UserListItem from "../UserAvatar/UserListItem";
 
-const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
+const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
   const [groupChatName, setGroupChatName] = useState("");
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -68,6 +68,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
       // If logged in user removed himself or left the group
       removeUser._id === user._id ? setSelectedChat() : setSelectedChat(data);
       setFetchAgain(!fetchAgain); // Fetching all the chat again
+      fetchMessages(); // All the messages will be refreshed
       setLoading(false);
     } catch (error) {
       setLoading(false);
