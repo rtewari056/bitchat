@@ -9,6 +9,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
+import io from "socket.io-client";
 
 import { ChatState } from "../context/ChatProvider";
 import { getSender, getSenderFull } from "../config/ChatLogics";
@@ -16,10 +17,16 @@ import ProfileModal from "./miscellaneous/ProfileModal";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import ScrollableChat from "./ScrollableChat";
 
+const ENDPOINT = "http://localhost:5000";
+let socket, selectedChatCompare;
+
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
 
   const { user, selectedChat, setSelectedChat } = ChatState();
   const toast = useToast();
@@ -43,6 +50,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
       setMessages(data);
       setLoading(false);
+
+      socket.emit("join chat", selectedChat._id);
     } catch (error) {
       setLoading(false);
       return toast({
@@ -58,13 +67,37 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connected", () => setSocketConnected(true));
+
+    socket.on("typing", () => setIsTyping(true));
+    socket.on("stop typing", () => setIsTyping(false));
+  }, []);
+
+  useEffect(() => {
     fetchMessages(); // Whenever users switches chat, call the function again
+    selectedChatCompare = selectedChat;
     // eslint-disable-next-line
   }, [selectedChat]);
+
+  useEffect(() => {
+    socket.on("message recieved", (newMessageRecieved) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageRecieved.chat[0]._id
+      ) {
+        // Give notification
+      } else {
+        setMessages([...messages, newMessageRecieved]);
+      }
+    });
+  });
 
   const sendMessage = async (e) => {
     // Check if 'Enter' key is pressed and we have something inside 'newMessage'
     if (e.key === "Enter" && newMessage) {
+      socket.emit("stop typing", selectedChat._id);
       try {
         setNewMessage(""); // Clear message field before making API call (won't affect API call as the function is asynchronous)
 
@@ -80,7 +113,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           }),
         });
         const data = await response.json();
+        console.log(data);
 
+        socket.emit("new message", data);
         setNewMessage("");
         setMessages([...messages, data]); // Add new message with existing messages
       } catch (error) {
@@ -101,6 +136,25 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     setNewMessage(e.target.value);
 
     // Typing Indicator Logic
+    if (!socketConnected) return;
+
+    if (!typing) {
+      setTyping(true);
+      socket.emit("typing", selectedChat._id);
+    }
+
+    let lastTypingTime = new Date().getTime();
+    let timerLength = 3000;
+
+    setTimeout(() => {
+      let timeNow = new Date().getTime();
+      let timeDiff = timeNow - lastTypingTime;
+
+      if (timeDiff >= timerLength && typing) {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }
+    }, timerLength);
   };
 
   return (
@@ -167,7 +221,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   scrollbarWidth: "none",
                 }}
               >
-                <ScrollableChat messages={messages} />
+                <ScrollableChat messages={messages} isTyping={isTyping} />
               </div>
             )}
 
