@@ -28,6 +28,8 @@ import { ChatState } from "../../context/ChatProvider";
 import ProfileModal from "./ProfileModal";
 import ChatLoading from "../ChatLoading";
 import UserListItem from "../UserAvatar/UserListItem";
+import { getSender } from "../../config/ChatLogics";
+import "../../App.css";
 
 const SideDrawer = () => {
   const [search, setSearch] = useState("");
@@ -35,7 +37,14 @@ const SideDrawer = () => {
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
 
-  const { user, setSelectedChat, chats, setChats } = ChatState();
+  const {
+    user,
+    setSelectedChat,
+    chats,
+    setChats,
+    notification,
+    setNotification,
+  } = ChatState();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
@@ -150,11 +159,36 @@ const SideDrawer = () => {
         {/* User Profile and Bell Icon Section */}
         <div>
           <Menu>
-            <MenuButton p="1">
+            <MenuButton p="1" className="notification-badge-container">
               <BellIcon fontSize="2xl" m="1" />
+
+              {notification.length > 0 && (
+                <span className="notification-badge">
+                  {notification.length > 9 ? "9+" : notification.length}
+                </span>
+              )}
             </MenuButton>
 
-            {/* <MenuList></MenuList> */}
+            <MenuList>
+              {!notification.length && <Text pl="2">No New Messages</Text>}
+              {notification.map((notif) => (
+                <MenuItem
+                  key={notif._id}
+                  onClick={() => {
+                    setSelectedChat(notif.chat[0]);
+                    setNotification(notification.filter((n) => n !== notif));
+                  }}
+                >
+                  {notif.chat.isGroupChat
+                    ? `New Message in ${notif.chat[0].chatName}`
+                    : `New Message from ${getSender(
+                        user,
+                        notif.chat[0].users
+                      )}`}
+                  {/* Change chat[0] to chat from server side */}
+                </MenuItem>
+              ))}
+            </MenuList>
           </Menu>
 
           <Menu>
@@ -209,7 +243,7 @@ const SideDrawer = () => {
                 />
               ))
             )}
-            
+
             {/* if the chat has been created, don't show the loading */}
             {loadingChat && <Spinner ml="auto" d="flex" />}
           </DrawerBody>

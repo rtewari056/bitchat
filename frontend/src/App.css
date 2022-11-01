@@ -39,3 +39,21 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.notification-badge-container {
+  position: relative;
+  margin-right: 10px;
+}
+
+.notification-badge {
+  background-color: red;
+  font-size: 12px;
+  color: white;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 35%;
+  position: absolute;
+  top: 0px;
+  left: 18px;
+}
