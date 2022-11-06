@@ -1,5 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const path = require("path");
+
 const { connectToMongoDB } = require("./config");
 const { userRoutes, chatRoutes, messageRoutes } = require("./routes");
 const { notFound, errorHandler } = require("./middleware");
@@ -9,13 +11,25 @@ app.use(express.json()); // Accept JSON data
 dotenv.config(); // Configure and use variables defined in .env file
 connectToMongoDB(); // Connect to Database
 
-app.get("/", (req, res) => {
-  res.send("API is running");
-});
-
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
+
+// --------------------------DEPLOYMENT------------------------------
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../", "frontend", "build", "index.html"));
+  });
+} else {
+  app.get("/", (req, res) => {
+    res.send("API is running");
+  });
+}
+
+// --------------------------DEPLOYMENT------------------------------
 
 app.use(notFound); // Handle invalid routes
 app.use(errorHandler);
@@ -30,13 +44,6 @@ const io = require("socket.io")(server, {
   },
   pingTimeout: 60 * 1000,
 });
-
-// io(server, {
-//   cors: {
-//     origin: "http://localhost:3000",
-//   },
-//   pingTimeout: 60 * 1000,
-// });
 
 io.on("connection", (socket) => {
   console.log("Connected to socket.io");

@@ -1,10 +1,12 @@
 {
-  "name": "backend",
+  "name": "chat-app",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon backend/server.js"
+    "start": "node backend/server.js",
+    "client": "npm start --prefix frontend",
+    "server": "nodemon backend/server.js"
   },
   "author": "Rohit Tewari",
   "license": "ISC",
