@@ -8,7 +8,7 @@ const { notFound, errorHandler } = require("./middleware");
 
 const app = express(); // Use express js in our app
 app.use(express.json()); // Accept JSON data
-dotenv.config(); // Configure and use variables defined in .env file
+dotenv.config({ path: path.join(__dirname, "../.env") }); // Specify a custom path if your file containing environment variables is located elsewhere
 connectToMongoDB(); // Connect to Database
 
 app.use("/api/user", userRoutes);
@@ -21,7 +21,9 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/build")));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../", "frontend", "build", "index.html"));
+    res.sendFile(
+      path.resolve(__dirname, "../", "frontend", "build", "index.html")
+    );
   });
 } else {
   app.get("/", (req, res) => {
