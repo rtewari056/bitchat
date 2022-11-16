@@ -67,7 +67,7 @@ const Signup = () => {
 
         setCredentials({
           ...credentials,
-          [e.target.name]: json.url.toString(),
+          [e.target.name]: json.secure_url.toString(),
         });
         setLoading(false);
       } catch (error) {

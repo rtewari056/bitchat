@@ -1,5 +1,5 @@
 {
-  "name": "chat-app",
+  "name": "bitchat",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
