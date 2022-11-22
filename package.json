@@ -4,9 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node backend/server.js",
-    "client": "npm start --prefix frontend",
-    "server": "nodemon backend/server.js"
+    "start": "node server.js",
+    "client": "npm start --prefix client",
+    "server": "nodemon server.js"
   },
   "author": "Rohit Tewari",
   "license": "ISC",

@@ -57,47 +57,21 @@ This application is deployed on DigitalOcean. Please check it out :smile: [here]
 
 **Deployed On:**
 
-[![Sendinblue](https://img.shields.io/badge/Digital_Ocean-0080FF?style=for-the-badge&logo=DigitalOcean&logoColor=white)](https://bitchat.rohittewari.live)
+[![DigitalOcean](https://img.shields.io/badge/Digital_Ocean-0080FF?style=for-the-badge&logo=DigitalOcean&logoColor=white)](https://bitchat.rohittewari.live)
 
 ## ⚡️ Features
 
-- [x] Secure file transfer via email, or unique shareable links.
-- [x] Intuitive and friendly UI with drag & drop feature.
-- [x] Toast notifications for actions: uploading files, exceed file size limit, sending email etc.
-- [x] View upload progress on the app.
-- [x] Send large files up to 100 MB per transfer.
-- [x] Files are available up to 24 hours before being automatically and permanently erased from servers.
+- [x] Real time communication is supported using [Socket.io](https://socket.io/)
+- [x] Fully Responsive UI
+- [x] User authentication using email witn Login as well as Logout feature.
+- [x] Passwords are encrypted.
+- [x] Toast notifications for user actions.
+- [x] Users can create group chat.
+- [x] Typing Indicators while other user typing something.
 
 ## 📁 Project structure
 ```terminal
-├── backend/
-│   ├── config/
-│   │   ├── connectToMongoDb.js
-│   │   ├── generateHashedPassword.js
-│   │   ├── generateToken.js
-│   │   ├── index.js
-│   │   └── verifyPassword.js
-│   ├── controllers/
-│   │   ├── chatControllers.js
-│   │   ├── index.js
-│   │   ├── messageControllers.js
-│   │   └── userControllers.js
-│   ├── middleware/
-│   │   ├── authMiddleware.js
-│   │   ├── errorMiddleware.js
-│   │   └── index.js
-│   ├── models/
-│   │   ├── Chat.js
-│   │   ├── Message.js
-│   │   ├── User.js
-│   │   └── index.js
-│   ├── routes/
-│   │   ├── chatRoutes.js
-│   │   ├── index.js
-│   │   ├── messageRoutes.js
-│   │   └── userRoutes.js
-│   └── server.js
-├── frontend/
+├── client/
 │   ├── public/
 │   │   ├── favicon.ico
 │   │   ├── index.html
@@ -138,12 +112,38 @@ This application is deployed on DigitalOcean. Please check it out :smile: [here]
 │   │   ├── App.js
 │   │   └── index.js
 │   └── package.json
+├── config/
+│   ├── connectToMongoDb.js
+│   ├── generateHashedPassword.js
+│   ├── generateToken.js
+│   ├── index.js
+│   └── verifyPassword.js
+├── controllers/
+│   ├── chatControllers.js
+│   ├── index.js
+│   ├── messageControllers.js
+│   └── userControllers.js
+├── middleware/
+│   ├── authMiddleware.js
+│   ├── errorMiddleware.js
+│   └── index.js
+├── models/
+│   ├── Chat.js
+│   ├── Message.js
+│   ├── User.js
+│   └── index.js
+├── routes/
+│   ├── chatRoutes.js
+│   ├── index.js
+│   ├── messageRoutes.js
+│   └── userRoutes.js
 ├── .env.example
 ├── .gitignore
 ├── LICENSE
 ├── package-lock.json
 ├── package.json
-└── README.md
+├── README.md
+└── server.js
 ```
 
 ## 📖 Prerequisites
@@ -175,9 +175,9 @@ NODE_ENV=development # Change to "production" when deploying
 ### 4. Install package dependencies:
 
 ```bash
-npm install # Backend dependencies
-cd frontend
-npm install # Frontend dependencies
+npm install # Server dependencies
+cd client
+npm install # Client dependencies
 ```
 
 ### 4. Run project:

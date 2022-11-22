@@ -1,9 +1,9 @@
 # dependencies
 /node_modules
-/frontend/node_modules/
+/client/node_modules/
 
 # production
-/frontend/build
+/client/build
 
 # misc
 .env
