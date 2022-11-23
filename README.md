@@ -63,7 +63,7 @@ This application is deployed on DigitalOcean. Please check it out :smile: [here]
 
 - [x] Real time communication is supported using [Socket.io](https://socket.io/)
 - [x] Fully Responsive UI
-- [x] User authentication using email witn Login as well as Logout feature.
+- [x] User authentication using email with Login as well as Logout feature.
 - [x] Passwords are encrypted.
 - [x] Toast notifications for user actions.
 - [x] Users can create group chat.
