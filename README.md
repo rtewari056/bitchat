@@ -169,6 +169,7 @@ cd bitchat
 PORT=5000
 MONGO_URI="YOUR_MONGO_CONNECTION_URL"
 JWT_SECRET="YOUR_JWT_SECRET"
+JWT_EXPIRE=2d
 NODE_ENV=development # Change to "production" when deploying
 ```
 
