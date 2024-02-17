@@ -5,20 +5,16 @@ export const loginSchema = object({
     password: string().min(1, 'Password is required')
 });
 
-// export const registerSchema = object({
-//     name: string({
-//         required_error: 'Name is required'
-//     }).min(1),
-//     email: string({
-//         required_error: 'Email is required'
-//     }).email('Email is not valid'),
-//     password: string({
-//         required_error: 'Password is required'
-//     }).min(6, 'Password should be min 6 characters'),
-//     confirmPassword: string({
-//         required_error: 'Confirm Password is required'
-//     })
-// }).refine((data) => data.password === data.confirmPassword, {
-//     message: 'Passwords do not match',
-//     path: ['confirmPassword']
-// })
+export const registerSchema = object({
+    name: string().min(1, 'Name is required'),
+    email: string().min(1, 'Email is required').email('Email is not valid'),
+    password: string({
+        required_error: 'Password is required'
+    }).min(8, 'Password should be min 8 characters'),
+    confirmPassword: string({
+        required_error: 'Confirm Password is required'
+    })
+}).refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword']
+})
