@@ -1,4 +1,10 @@
 import Image from "next/image";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Bit Chat | Home',
+  description: 'BitChat is a real-time chat application made using Next js with user authentication. It allows multiple users to have a private and group chat.'
+};
 
 export default function Home() {
   return (
