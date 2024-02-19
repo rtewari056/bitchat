@@ -1,4 +1,4 @@
-import { any, custom, object, string } from 'zod';
+import { custom, object, string } from 'zod';
 
 // Global config
 import { GLOBAL_CONFIG } from '@/config';

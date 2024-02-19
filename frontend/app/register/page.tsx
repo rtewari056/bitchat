@@ -1,16 +1,41 @@
 "use client";
 
+import Image from "next/image";
 import { ChangeEvent, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from 'axios';
 
 // Zod schema
 import { registerSchema } from "@/schema/Auth/auth.schema";
 
 // Zod type
 import { RegisterForm } from "@/schema/Auth/auth.type";
-import Image from "next/image";
+
+// Global config
 import { GLOBAL_CONFIG } from "@/config";
+
+// Type
+import { CloudinaryImage, Response } from "@/model";
+
+const uploadImage = async (file: File) => {
+    try {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await axios.post<Response<CloudinaryImage>>('/api/upload-image', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        const data = await response.data;
+
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 export default function Register() {
 
@@ -25,13 +50,16 @@ export default function Register() {
         resolver: zodResolver(registerSchema)
     });
 
-    const onSubmit: SubmitHandler<RegisterForm> = (data): void => {
+    const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
         console.log('Form Submitted => ', data);
+
+        const response = await uploadImage(data.profilePic[0]);
+
+        console.log("response => ", response);
     }
 
-    const handleProfilePic = (e: ChangeEvent): void => {
-        const target = e.target as HTMLInputElement;
-        const profilePic: File = (target.files as FileList)[0]; // Get the file
+    const handleProfilePic = (e: ChangeEvent<HTMLInputElement>): void => {
+        const profilePic: File = (e.target.files as FileList)[0]; // Get the file
 
         // Check file type and file size
         if (!GLOBAL_CONFIG.ACCEPTED_IMAGE_TYPES.includes(profilePic?.type) || profilePic?.size >= GLOBAL_CONFIG.MAX_FILE_SIZE) {
