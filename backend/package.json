@@ -1,0 +1,45 @@
+{
+  "name": "typescript-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve:dev": "concurrently \"npx tsc --watch\" \"nodemon dist/server.js\"",
+    "serve:prod": "npx tsc && node dist/server.js",
+    "build": "rimraf ./build && npx tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rtewari056/node-typescript-boilerplate.git"
+  },
+  "author": "Rohit Tewari",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rtewari056/node-typescript-boilerplate/issues"
+  },
+  "homepage": "https://github.com/rtewari056/node-typescript-boilerplate#readme",
+  "dependencies": {
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.6.1",
+    "nodemailer": "^6.9.5",
+    "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.7.3",
+    "@types/cookie-parser": "^1.4.4",
+    "@types/cors": "^2.8.14",
+    "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.3",
+    "@types/node": "^20.6.0",
+    "@types/nodemailer": "^6.4.10",
+    "concurrently": "^8.2.1",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.2.2"
+  }
+}
