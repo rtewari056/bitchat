@@ -4,7 +4,7 @@ import path from 'path';
 dotenv.config({ path: path.resolve(process.cwd(), 'src/.env') });
 
 // Service
-import db from '../services';
+// import db from '../services';
 
 // Helper
 import ErrorResponse from '../helpers/error.class';
@@ -30,11 +30,11 @@ const isAuthenticated = async (req: Request, res: Response, next: NextFunction):
         }
         
         // Get existing user from decoded data extracted from access token
-        const existingUser = await db.getUserByEmail(decoded.email);
+        // const existingUser = await db.getUserByEmail(decoded.email);
         
-        if (!existingUser) {
-            return next(new ErrorResponse('Not authorized to access this route', 401));
-        }
+        // if (!existingUser) {
+        //     return next(new ErrorResponse('Not authorized to access this route', 401));
+        // }
         
         // Set decoded data for further use
         res.locals.user = decoded;

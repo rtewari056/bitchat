@@ -13,6 +13,9 @@ const createUserSchema = object({
         }).min(6, 'Password should be min 6 characters'),
         confirmPassword: string({
             required_error: 'Confirm Password is required'
+        }),
+        profilePic: string({
+            required_error: 'Profile picture is required'
         })
     }).refine((data) => data.password === data.confirmPassword, {
         message: 'Passwords do not match',

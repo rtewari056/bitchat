@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import db from '../services';
+// import db from '../services';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -12,13 +12,13 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction): Pro
 
     try {
         // Get all users from our DB
-        const users = await db.getUsers();
+        // const users = await db.getUsers();
 
-        return res.status(200).json({
-            success: true,
-            decoded: res.locals.user,
-            users
-        });
+        // return res.status(200).json({
+        //     success: true,
+        //     decoded: res.locals.user,
+        //     users
+        // });
     } catch (error: unknown) {
         return next(error);
     }
