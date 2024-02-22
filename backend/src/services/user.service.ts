@@ -2,7 +2,7 @@ import UserModel from "../models/user.model"
 
 import { User } from "../types/mongoose.type";
 
-const findUserByEmail = (email:  string) => {
+const getUserByEmail = (email:  string) => {
     return UserModel.findOne({ email });
 }
 
@@ -18,4 +18,4 @@ const updateUserById = (id: string, values: Record<string, string | boolean | nu
     return UserModel.findByIdAndUpdate(id, values);
 }
 
-export default { findUserByEmail, createUser, getUserById, updateUserById };
+export default { getUserByEmail, createUser, getUserById, updateUserById };
