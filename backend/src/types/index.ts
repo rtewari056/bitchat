@@ -7,13 +7,13 @@ interface EmailPayload {
 };
 
 interface TokenSigningPayload {
-    id: number;
+    id: string;
     name: string;
     email: string;
 };
 
 interface DecodedTokenData {
-    id: number;
+    id: string;
     name: string;
     email: string;
     iat: number
