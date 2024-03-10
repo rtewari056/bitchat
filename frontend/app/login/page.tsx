@@ -1,7 +1,9 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 
 // Zod schema
 import { loginSchema } from '@/schema/Auth/auth.schema';
@@ -9,7 +11,17 @@ import { loginSchema } from '@/schema/Auth/auth.schema';
 // Zod type
 import { LoginForm } from '@/schema/Auth/auth.type';
 
+// Model
+import { LoginResponse } from "@/model";
+
+// Context
+import { useChatContext } from "@/context/Chat.context";
+
 export default function Login() {
+
+    const router = useRouter()
+
+    const { setIsLoggedIn, setUser } = useChatContext();
 
     const {
         register,
@@ -33,8 +45,23 @@ export default function Login() {
         });
     }
 
-    const onSubmit: SubmitHandler<LoginForm> = (data): void => {
+    const onSubmit: SubmitHandler<LoginForm> = async (data) => {
         console.log('Form Submitted => ', data);
+        try {
+            const response = await axios.post<LoginResponse>('/api/auth/login', data);
+            console.log('data => ', response.data);
+
+            localStorage.setItem('userInfo', JSON.stringify(response.data));
+
+            setUser(response.data);
+            setIsLoggedIn(true);
+
+            router.push('/')
+            
+        } catch (error) {
+            console.error('Internal server error');
+            
+        }
     }
 
     return (

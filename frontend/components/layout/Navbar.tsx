@@ -1,18 +1,22 @@
 "use client";
 
-import { ThemeContext } from "@/context/Theme.context";
 import Image from "next/image";
-import { useContext, useState } from "react";
-import { Notification } from "@/components";
+import { useState } from "react";
+import { Notification, SideDrawer } from "@/components";
+import { useChatContext } from "@/context/Chat.context";
 
 export default function Navbar() {
-    const [showNotification, setSetshowNotification] = useState(true);
-    const [showProfile, setShowProfile] = useState(true);
+    const [showNotification, setSetshowNotification] = useState<boolean>(true);
+    const [showProfile, setShowProfile] = useState<boolean>(true);
 
-    const { changeTheme } = useContext(ThemeContext);
+    const { isLoggedIn } = useChatContext();
 
     return (
         <div className="navbar bg-base-100">
+            {isLoggedIn && <div className="flex-1">
+                <SideDrawer />
+            </div>}
+
             <div className="flex-1">
                 <a className="btn btn-ghost text-xl">BitChat</a>
             </div>

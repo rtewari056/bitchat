@@ -1,12 +1,13 @@
-import { number, object, string, TypeOf } from 'zod';
+import { object, string, TypeOf } from 'zod';
 
-const searchUserSchema = object({
-    query: object({
-        search: string().optional(),
-        limit: number().optional()
+const accessChatSchema = object({
+    body: object({
+        userId: string({
+            required_error: 'User id is required'
+        }).optional()
     })
 });
 
-type SearchUserInput = TypeOf<typeof searchUserSchema>['query'];
+type AccessChatInput = TypeOf<typeof accessChatSchema>['body'];
 
-export { searchUserSchema, SearchUserInput }
+export { accessChatSchema, AccessChatInput }

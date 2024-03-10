@@ -16,19 +16,21 @@ import { RegisterForm } from "@/schema/Auth/auth.type";
 import { GLOBAL_CONFIG } from "@/config";
 
 // Type
-import { CloudinaryImage, Response } from "@/model";
+import { CloudinaryImage, RegisterResponse } from "@/model";
 
 const uploadImage = async (file: File) => {
     try {
         const formData = new FormData();
         formData.append('image', file);
 
-        const response = await axios.post<Response<CloudinaryImage>>('/api/upload-image', formData, {
+        const response = await axios.post<CloudinaryImage>('/api/upload-image', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         });
-        const data = await response.data;
+    
+        const data = response.data;
+        console.log("cloud data => ", data);
 
         return data;
     } catch (error) {
@@ -51,11 +53,22 @@ export default function Register() {
     });
 
     const onSubmit: SubmitHandler<RegisterForm> = async (data) => {
-        console.log('Form Submitted => ', data);
+        try {
+            const uploadImageResponse = await uploadImage(data.profilePic[0]);
+    
+            console.log("uploadImageResponse => ", uploadImageResponse);
+    
+            const response = await axios.post<RegisterResponse>('/api/auth/register', { ...data, profilePic: uploadImageResponse?.image_url });
 
-        const response = await uploadImage(data.profilePic[0]);
+            if (response.data.success) {
+                // Do something else
+            }
+            console.log("register response => ", response.data);
+            
+        } catch (error) {
+            console.error("Internal server error");
+        }
 
-        console.log("response => ", response);
     }
 
     const handleProfilePic = (e: ChangeEvent<HTMLInputElement>): void => {

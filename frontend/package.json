@@ -9,9 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/next-js": "^2.2.0",
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.3.4",
     "axios": "^1.6.7",
     "cloudinary": "^2.0.1",
+    "framer-motion": "^11.0.8",
     "next": "14.1.0",
     "react": "^18",
     "react-dom": "^18",

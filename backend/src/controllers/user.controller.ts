@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import db from '../services/user.service';
 import dotenv from 'dotenv';
 import path from 'path';
-import { SearchUserInput } from '../schema/chat.schema';
+import { SearchUserInput } from '../schema/user.schema';
 
 import { DecodedTokenData } from '../types';
 

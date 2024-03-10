@@ -4,8 +4,12 @@ import { Inter } from "next/font/google";
 // Components
 import { Navbar } from "@/components";
 
+// Context
+import { ChatWrapper } from "@/context/Chat.context";
+
 // Global style
 import "./globals.scss";
+// import { Providers } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,8 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
-        {children}
+        <ChatWrapper>
+          {/* <Providers> */}
+            <Navbar />
+            {children}
+          {/* </Providers> */}
+        </ChatWrapper>
       </body>
     </html>
   );

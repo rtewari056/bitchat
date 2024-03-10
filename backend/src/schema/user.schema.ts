@@ -1,4 +1,4 @@
-import { object, string, TypeOf } from 'zod';
+import { number, object, string, TypeOf } from 'zod';
 
 const createUserSchema = object({
     body: object({
@@ -56,9 +56,18 @@ const resetPasswordSchema = object({
     })
 });
 
+const searchUserSchema = object({
+    query: object({
+        search: string().optional(),
+        limit: number().optional()
+    })
+});
+
 type CreateUserInput = TypeOf<typeof createUserSchema>['body'];
 type VerifyUserInput = TypeOf<typeof verifyUserSchema>['params'];
 type forgotPasswordInput = TypeOf<typeof forgotPasswordSchema>['body'];
 type resetPasswordInput = TypeOf<typeof resetPasswordSchema>;
+type SearchUserInput = TypeOf<typeof searchUserSchema>['query'];
 
-export { createUserSchema, CreateUserInput, verifyUserSchema, VerifyUserInput, forgotPasswordSchema, forgotPasswordInput, resetPasswordSchema, resetPasswordInput };
+
+export { createUserSchema, CreateUserInput, verifyUserSchema, VerifyUserInput, forgotPasswordSchema, forgotPasswordInput, resetPasswordSchema, resetPasswordInput, searchUserSchema, SearchUserInput };

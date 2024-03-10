@@ -21,7 +21,6 @@ import { getAccessTokenInput, LoginUserInput } from '../schema/auth.schema';
 
 // Custom Type
 import { TokenSigningPayload } from '../types';
-import log from '../helpers/logger';
 
 // @description     Register a user
 // @route           POST /api/auth/register
@@ -233,6 +232,10 @@ const login = async (req: Request<{}, {}, LoginUserInput>, res: Response, next: 
         // Send the tokens
         return res.status(200).json({
             success: true,
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            profile_pic: user.profile_pic,
             accessToken,
             refreshToken,
             message: 'Login successfully'
