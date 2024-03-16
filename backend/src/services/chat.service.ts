@@ -16,10 +16,17 @@ const getChatById = (currentUserId: string, requestedUserId: string) => {
 
 const getChatWithSender = (chatData: any) => {
     return UserModel.populate(chatData, {
-        path: "latestMessage.sender",
-        select: "name email profile_pic", // Fields we want to populate
-      });
-    
+        path: 'latestMessage.sender',
+        select: 'name email profile_pic', // Fields we want to populate
+    });
 }
 
-export default { getChatById, getChatWithSender };
+const createNewChat = (newChatData: any) => {
+    return ChatModel.create(newChatData);
+}
+
+const getCreatedChatById = (chatId: string) => {
+    return ChatModel.findOne({ _id: chatId }).populate('users')
+}
+
+export default { getChatById, getChatWithSender, createNewChat, getCreatedChatById };

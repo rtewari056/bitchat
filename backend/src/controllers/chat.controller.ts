@@ -10,8 +10,8 @@ import chatModel from '../models/chat.model';
 
 dotenv.config({ path: path.resolve(process.cwd(), 'src/.env') });
 
-// @description     Create or fetch existing chat
-// @route           GET /api/chat
+// @description     Create or access existing chat between two user
+// @route           POST /api/chat
 // @access          Private
 const accessChat = async (req: Request<{}, {}, AccessChatInput>, res: Response, next: NextFunction): Promise<void | Response<any, Record<string, any>>> => {
   try {
@@ -38,16 +38,12 @@ const accessChat = async (req: Request<{}, {}, AccessChatInput>, res: Response, 
         users: [currentUserId, userId],
       };
 
-      try {
-        const createdChat = await chatModel.create(newChatData);
-        const FullChat = await chatModel.findOne({ _id: createdChat._id }).populate(
-          "users",
-          "-password"
-        );
-        res.status(200).json(FullChat);
-      } catch (error) {
-        return next(error);
-      }
+      const createdChat = await db.createNewChat(newChatData);
+
+      const fullChat = await db.getCreatedChatById(createdChat.id);
+
+      return res.status(200).json(fullChat);
+
     }
 
   } catch (error: unknown) {
