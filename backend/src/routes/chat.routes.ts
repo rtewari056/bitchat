@@ -5,7 +5,9 @@ import auth from '../middlewares/isAuthenticated.middleware.js'
 
 const router: Router = express.Router();
 
-router.route('/chat').post(auth.isAuthenticated, chat.accessChat);
+router.route('/chat')
+    .get(auth.isAuthenticated, chat.fetchChat)
+    .post(auth.isAuthenticated, chat.accessChat);
 // router.route('/group').post(auth.isAuthenticated, chat.createGroupChat);
 
 export default router;
