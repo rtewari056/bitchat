@@ -6,6 +6,7 @@ import { Navbar } from "@/components";
 
 // Context
 import { ChatWrapper } from "@/context/Chat.context";
+import { AuthWrapper } from "@/context/auth.context";
 
 // Global style
 import "./globals.scss";
@@ -26,12 +27,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ChatWrapper>
-          {/* <Providers> */}
+        <AuthWrapper>
+          <ChatWrapper>
+            {/* <Providers> */}
             <Navbar />
             {children}
-          {/* </Providers> */}
-        </ChatWrapper>
+            {/* </Providers> */}
+          </ChatWrapper>
+        </AuthWrapper>
       </body>
     </html>
   );
