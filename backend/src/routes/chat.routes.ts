@@ -6,7 +6,9 @@ import auth from '../middlewares/isAuthenticated.middleware';
 
 // Middleware
 import validateResource from '../middlewares/validateResource.middleware';
-import { accessChatSchema, createGroupChatSchema, renameGroupChatSchema } from '../schema/chat.schema';
+
+// Zod Schema
+import { accessChatSchema, addToGroupChatSchema, createGroupChatSchema, removeFromGroupChatSchema, renameGroupChatSchema } from '../schema/chat.schema';
 
 const router: Router = express.Router();
 
@@ -15,5 +17,7 @@ router.route('/chat')
     .post(auth.isAuthenticated, validateResource(accessChatSchema), chat.accessChat);
 router.route('/chat/group').post(auth.isAuthenticated, validateResource(createGroupChatSchema), chat.createGroupChat);
 router.route('/chat/group/rename').put(auth.isAuthenticated, validateResource(renameGroupChatSchema), chat.renameGroupChat);
+router.route('/chat/group/add').put(auth.isAuthenticated, validateResource(addToGroupChatSchema), chat.addToGroupChat);
+router.route('/chat/group/remove').delete(auth.isAuthenticated, validateResource(removeFromGroupChatSchema), chat.removeFromGroupChat);
 
 export default router;

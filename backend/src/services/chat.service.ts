@@ -60,7 +60,21 @@ const getCreatedGroupChatByAdminId = (groupChatId: string, adminId: string) => {
 }
 
 const renameGroupChat = (groupChatId: string, newChatName: string) => {
-    return ChatModel.findByIdAndUpdate(groupChatId, { chatName: newChatName }, { new: true });
+    return ChatModel.findByIdAndUpdate(groupChatId, { chatName: newChatName }, { new: true })
+        .populate('users')
+        .populate('groupAdmin');
 }
 
-export default { getChatById, createNewChat, getCreatedChatById, getAllChatsById, createNewGroupChat, getCreatedGroupChatById, getCreatedGroupChatByAdminId, renameGroupChat };
+const addToGroupChat = (groupChatId: string, userId: string) => {
+    return ChatModel.findByIdAndUpdate(groupChatId, { $push: { users: userId } }, { new: true })
+        .populate('users')
+        .populate('groupAdmin');
+}
+
+const removeFromGroupChat = (groupChatId: string, userId: string) => {
+    return ChatModel.findByIdAndUpdate(groupChatId, { $pull: { users: userId } }, { new: true })
+        .populate('users')
+        .populate('groupAdmin');
+}
+
+export default { getChatById, createNewChat, getCreatedChatById, getAllChatsById, createNewGroupChat, getCreatedGroupChatById, getCreatedGroupChatByAdminId, renameGroupChat, addToGroupChat, removeFromGroupChat };

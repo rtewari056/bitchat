@@ -55,8 +55,32 @@ const renameGroupChatSchema = object({
     })
 });
 
+const addToGroupChatSchema = object({
+    body: object({
+        chatId: string({
+            required_error: 'Chat id is required'
+        }),
+        userId: string({
+            required_error: 'User id is required'
+        })
+    })
+});
+
+const removeFromGroupChatSchema = object({
+    body: object({
+        chatId: string({
+            required_error: 'Chat id is required'
+        }),
+        userId: string({
+            required_error: 'User id is required'
+        })
+    })
+});
+
 type AccessChatInput = TypeOf<typeof accessChatSchema>['body'];
 type CreateGroupChatInput = TypeOf<typeof createGroupChatSchema>['body'];
 type RenameGroupChatInput = TypeOf<typeof renameGroupChatSchema>['body'];
+type AddToGroupChatInput = TypeOf<typeof addToGroupChatSchema>['body'];
+type RemoveFromGroupChatInput = TypeOf<typeof removeFromGroupChatSchema>['body'];
 
-export { accessChatSchema, AccessChatInput, createGroupChatSchema, CreateGroupChatInput, renameGroupChatSchema, RenameGroupChatInput }
+export { accessChatSchema, AccessChatInput, createGroupChatSchema, CreateGroupChatInput, renameGroupChatSchema, RenameGroupChatInput, addToGroupChatSchema, AddToGroupChatInput, removeFromGroupChatSchema, RemoveFromGroupChatInput }

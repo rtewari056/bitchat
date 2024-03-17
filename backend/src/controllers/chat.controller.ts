@@ -6,7 +6,7 @@ import ErrorResponse from '../helpers/error.class';
 
 import db from '../services/chat.service';
 import userService from '../services/user.service';
-import { AccessChatInput, CreateGroupChatInput, RenameGroupChatInput } from '../schema/chat.schema';
+import { AccessChatInput, AddToGroupChatInput, CreateGroupChatInput, RemoveFromGroupChatInput, RenameGroupChatInput } from '../schema/chat.schema';
 
 dotenv.config({ path: path.resolve(process.cwd(), 'src/.env') });
 
@@ -105,7 +105,7 @@ const renameGroupChat = async (req: Request<{}, {}, RenameGroupChatInput>, res: 
     const isGroupChatCreatedByAdmin = await db.getCreatedGroupChatByAdminId(chatId, currentUserId);
 
     if (!isGroupChatCreatedByAdmin) {
-      return next(new ErrorResponse('Chat not found or you are unauthorized to rename', 400));
+      return next(new ErrorResponse('Chat not found or you are unauthorized to modify', 400));
     }
 
     const updatedGroupChat = await db.renameGroupChat(chatId, chatName);
@@ -117,4 +117,54 @@ const renameGroupChat = async (req: Request<{}, {}, RenameGroupChatInput>, res: 
   }
 };
 
-export default { accessChat, fetchChat, createGroupChat, renameGroupChat };
+// @description     Add to group chat
+// @route           PUT /api/chat/group/add
+// @access          Private
+const addToGroupChat = async (req: Request<{}, {}, AddToGroupChatInput>, res: Response, next: NextFunction): Promise<void | Response<any, Record<string, any>>> => {
+  try {
+
+    const { chatId, userId } = req.body;
+
+    const currentUserId = res.locals.user.id as string;
+
+    const isGroupChatCreatedByAdmin = await db.getCreatedGroupChatByAdminId(chatId, currentUserId);
+
+    if (!isGroupChatCreatedByAdmin) {
+      return next(new ErrorResponse('Chat not found or you are unauthorized to modify', 400));
+    }
+
+    const updatedGroupChat = await db.addToGroupChat(chatId, userId);
+
+    return res.status(200).json(updatedGroupChat);
+
+  } catch (error: unknown) {
+    return next(error);
+  }
+};
+
+// @description     Remove from group chat
+// @route           PUT /api/chat/group/remove
+// @access          Private
+const removeFromGroupChat = async (req: Request<{}, {}, RemoveFromGroupChatInput>, res: Response, next: NextFunction): Promise<void | Response<any, Record<string, any>>> => {
+  try {
+
+    const { chatId, userId } = req.body;
+
+    const currentUserId = res.locals.user.id as string;
+
+    const isGroupChatCreatedByAdmin = await db.getCreatedGroupChatByAdminId(chatId, currentUserId);
+
+    if (!isGroupChatCreatedByAdmin) {
+      return next(new ErrorResponse('Chat not found or you are unauthorized to modify', 400));
+    }
+
+    const updatedGroupChat = await db.removeFromGroupChat(chatId, userId);
+
+    return res.status(200).json(updatedGroupChat);
+
+  } catch (error: unknown) {
+    return next(error);
+  }
+};
+
+export default { accessChat, fetchChat, createGroupChat, renameGroupChat, addToGroupChat, removeFromGroupChat };
