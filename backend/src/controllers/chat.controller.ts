@@ -5,7 +5,8 @@ import path from 'path';
 import ErrorResponse from '../helpers/error.class';
 
 import db from '../services/chat.service';
-import { AccessChatInput } from '../schema/chat.schema';
+import userService from '../services/user.service';
+import { AccessChatInput, CreateGroupChatInput } from '../schema/chat.schema';
 
 dotenv.config({ path: path.resolve(process.cwd(), 'src/.env') });
 
@@ -17,11 +18,6 @@ const accessChat = async (req: Request<{}, {}, AccessChatInput>, res: Response, 
 
     const { userId } = req.body;
     const currentUserId: string = res.locals.user.id;
-
-    // If chat with 'userId' not present in request
-    if (!userId) {
-      return next(new ErrorResponse('UserId param not sent with request', 400));
-    }
 
     let chatExists = await db.getChatById(currentUserId, userId);
 
@@ -65,4 +61,35 @@ const fetchChat = async (req: Request, res: Response, next: NextFunction): Promi
   }
 };
 
-export default { accessChat, fetchChat };
+// @description     Create group chat
+// @route           POST /api/chat/group
+// @access          Private
+const createGroupChat = async (req: Request<{}, {}, CreateGroupChatInput>, res: Response, next: NextFunction) => {
+  try {
+    const { name, users } = req.body;
+
+    const currentUserId = res.locals.user.id as string;
+
+    // Add current user in the group chat
+    const groupChatUsers = JSON.parse(users) as string[];
+    groupChatUsers.push(currentUserId)
+
+    const newGroupChatData = {
+      chatName: name,
+      users: groupChatUsers,
+      isGroupChat: true,
+      groupAdmin: await userService.getUserById(currentUserId) // Make the current user as admin
+    }
+
+    const groupChat = await db.createNewGroupChat(newGroupChatData);
+
+    const fullGroupChat = await db.getCreatedGroupChatById(groupChat.id);
+
+    return res.status(200).json(fullGroupChat);
+
+  } catch (error: unknown) {
+    return next(error);
+  }
+};
+
+export default { accessChat, fetchChat, createGroupChat };

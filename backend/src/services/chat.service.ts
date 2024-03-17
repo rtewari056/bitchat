@@ -45,4 +45,14 @@ const getAllChatsById = async (userId: string) => {
     });
 }
 
-export default { getChatById, createNewChat, getCreatedChatById, getAllChatsById };
+const createNewGroupChat = (newGroupChatData: any) => {
+    return ChatModel.create(newGroupChatData);
+}
+
+const getCreatedGroupChatById = (groupChatId: string) => {
+    return ChatModel.findOne({ _id: groupChatId })
+        .populate('users')
+        .populate('groupAdmin')
+}
+
+export default { getChatById, createNewChat, getCreatedChatById, getAllChatsById, createNewGroupChat, getCreatedGroupChatById };
