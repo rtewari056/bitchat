@@ -11,9 +11,9 @@ const getChatById = async (currentUserId: string, requestedUserId: string) => {
             { users: { $elemMatch: { $eq: requestedUserId } } },
         ],
     })
-    .populate('users') // Populate all users
-    .populate('latestMessage'); // Populate all latest message
-        
+        .populate('users') // Populate all users
+        .populate('latestMessage'); // Populate all latest message
+
     return await UserModel.populate(results, {
         path: 'latestMessage.sender',
         select: 'name email profile_pic', // Fields we want to populate
@@ -34,11 +34,11 @@ const getAllChatsById = async (userId: string) => {
             $elemMatch: { $eq: userId }
         }
     })
-    .populate('users')
-    .populate('groupAdmin')
-    .populate('latestMessage')
-    .sort({ updatedAt: -1 });
-    
+        .populate('users')
+        .populate('groupAdmin')
+        .populate('latestMessage')
+        .sort({ updatedAt: -1 });
+
     return await UserModel.populate(results, {
         path: 'latestMessage.sender',
         select: 'name email profile_pic'
@@ -55,4 +55,12 @@ const getCreatedGroupChatById = (groupChatId: string) => {
         .populate('groupAdmin')
 }
 
-export default { getChatById, createNewChat, getCreatedChatById, getAllChatsById, createNewGroupChat, getCreatedGroupChatById };
+const getCreatedGroupChatByAdminId = (groupChatId: string, adminId: string) => {
+    return ChatModel.findOne({ _id: groupChatId, groupAdmin: adminId });
+}
+
+const renameGroupChat = (groupChatId: string, newChatName: string) => {
+    return ChatModel.findByIdAndUpdate(groupChatId, { chatName: newChatName }, { new: true });
+}
+
+export default { getChatById, createNewChat, getCreatedChatById, getAllChatsById, createNewGroupChat, getCreatedGroupChatById, getCreatedGroupChatByAdminId, renameGroupChat };

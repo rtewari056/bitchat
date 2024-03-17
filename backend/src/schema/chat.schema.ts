@@ -44,7 +44,19 @@ const createGroupChatSchema = object({
     })
 });
 
+const renameGroupChatSchema = object({
+    body: object({
+        chatId: string({
+            required_error: 'Chat id is required'
+        }),
+        chatName: string({
+            required_error: 'Chat name is required'
+        })
+    })
+});
+
 type AccessChatInput = TypeOf<typeof accessChatSchema>['body'];
 type CreateGroupChatInput = TypeOf<typeof createGroupChatSchema>['body'];
+type RenameGroupChatInput = TypeOf<typeof renameGroupChatSchema>['body'];
 
-export { accessChatSchema, AccessChatInput, createGroupChatSchema, CreateGroupChatInput }
+export { accessChatSchema, AccessChatInput, createGroupChatSchema, CreateGroupChatInput, renameGroupChatSchema, RenameGroupChatInput }

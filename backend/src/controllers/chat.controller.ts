@@ -6,7 +6,7 @@ import ErrorResponse from '../helpers/error.class';
 
 import db from '../services/chat.service';
 import userService from '../services/user.service';
-import { AccessChatInput, CreateGroupChatInput } from '../schema/chat.schema';
+import { AccessChatInput, CreateGroupChatInput, RenameGroupChatInput } from '../schema/chat.schema';
 
 dotenv.config({ path: path.resolve(process.cwd(), 'src/.env') });
 
@@ -92,4 +92,29 @@ const createGroupChat = async (req: Request<{}, {}, CreateGroupChatInput>, res: 
   }
 };
 
-export default { accessChat, fetchChat, createGroupChat };
+// @description     Rename group chat
+// @route           PUT /api/chat/group/rename
+// @access          Private
+const renameGroupChat = async (req: Request<{}, {}, RenameGroupChatInput>, res: Response, next: NextFunction): Promise<void | Response<any, Record<string, any>>> => {
+  try {
+
+    const { chatId, chatName } = req.body;
+
+    const currentUserId = res.locals.user.id as string;
+
+    const isGroupChatCreatedByAdmin = await db.getCreatedGroupChatByAdminId(chatId, currentUserId);
+
+    if (!isGroupChatCreatedByAdmin) {
+      return next(new ErrorResponse('Chat not found or you are unauthorized to rename', 400));
+    }
+
+    const updatedGroupChat = await db.renameGroupChat(chatId, chatName);
+
+    return res.status(200).json(updatedGroupChat);
+
+  } catch (error: unknown) {
+    return next(error);
+  }
+};
+
+export default { accessChat, fetchChat, createGroupChat, renameGroupChat };
